@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Form View -->
+        <record id="view_form_mymodel" model="ir.ui.view">
+            <field name="name">mymodel.form</field>
+            <field name="model">my_module.mymodel</field>
+            <field name="arch" type="xml">
+                <form string="MyModel">
+                    <header>
+                        <button string="Set Amount to 100" type="object" name="button_action" class="oe_highlight"/>
+                    </header>
+
+                    <sheet>
+                        <group>
+                            <field name="name" string="Title"/>
+                            <field name="date" string="Publication Date"/>
+                        </group>
+                        <group>
+                            <field name="amount" string="Genre"/>
+                            <field name="active" string="Author"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_mymodel_form" model="ir.actions.act_window">
+            <field name="name">MyModel</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">my_module.mymodel</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_form_mymodel"/>
+        </record>
+
+        <menuitem id="menu_mymodel_form" name="MyModel" action="action_mymodel_form"/>
+    </data>
+</odoo>

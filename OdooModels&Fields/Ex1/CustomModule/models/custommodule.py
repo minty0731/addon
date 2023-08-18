@@ -1,4 +1,4 @@
-from odoo import models, fields, api
+from odoo import models, fields
 
 class MyModel(models.Model):
     _name = 'my_module.mymodel'
@@ -8,8 +8,3 @@ class MyModel(models.Model):
     date = fields.Date(string='Date')
     amount = fields.Float(string='Amount')
     active = fields.Boolean(string='Active', default=True)
-
-    def set_amount(self):
-        self.amount = 100.0 
-
-        
