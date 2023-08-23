@@ -4,8 +4,10 @@
     'category': 'Real Estate',
     'description': 'Manage Real Estate Advertisements',
     'depends': ['base'],
-    'data': [],  
+    'data': ['security/ir.model.access.csv',
+                'views/estate_property_views.xml',],  
     'demo': [],  
     'installable': True,
     'auto_install': False,
+
 }
