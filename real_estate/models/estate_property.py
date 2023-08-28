@@ -1,7 +1,10 @@
-from odoo import models, fields
+from odoo import models, fields, api
 from datetime import date, timedelta
 
 class EstateProperty(models.Model):
+    property_type_id = fields.Many2one('estate.property.type', string='Property Type')
+    tag_ids = fields.Many2many('estate.property.tag', string="Tags")
+
     _name = "estate.property"
     _description = "Real Estate Property"
 
@@ -40,3 +43,15 @@ class EstateProperty(models.Model):
         copy=False,
         default='new'
     )
+    
+    
+    
+    
+    buyer_id = fields.Many2one('res.partner', string="Buyer", copy=False)
+    salesperson_id = fields.Many2one('res.users', string="Salesperson", default=lambda self: self.env.user, required=True)
+    
+    @api.onchange('salesperson_id')
+    def _onchange_salesperson_id(self):
+        if self.salesperson_id:
+            self.user_id = self.salesperson_id.partner_id.id
+
