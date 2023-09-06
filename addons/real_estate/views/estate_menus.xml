@@ -9,8 +9,6 @@
 
     <menuitem id="estate_property_menu_action" name="Properties" parent="estate_first_level_menu" action="action_estate_property" sequence="10" />
 
-    
-
     <record id="action_estate_property_type" model="ir.actions.act_window">
         <field name="name">Property Types</field>
         <field name="res_model">estate.property.type</field>
@@ -21,11 +19,20 @@
 
 
     <record id="action_estate_property_tag" model="ir.actions.act_window">
-    <field name="name">Property Tags</field>
-    <field name="res_model">estate.property.tag</field>
-    <field name="view_mode">tree,form</field>
+        <field name="name">Property Tags</field>
+        <field name="res_model">estate.property.tag</field>
+        <field name="view_mode">tree,form</field>
     </record>
 
     <menuitem id="menu_property_tag_action" action="action_estate_property_tag" parent="estate_first_level_menu" sequence="30"/>
+
+    <record id="action_estate_property_offer" model="ir.actions.act_window">
+        <field name="name">Property Offers</field>
+        <field name="res_model">estate.property.offer</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_property_offer_action" action="action_estate_property_offer" parent="estate_first_level_menu" sequence="40"/>
+
 
 </odoo>

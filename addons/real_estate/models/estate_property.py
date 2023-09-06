@@ -1,5 +1,6 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, exceptions
 from datetime import date, timedelta
+from odoo.tools import float_utils
 
 class EstateProperty(models.Model):
     _name = "estate.property"
@@ -39,7 +40,7 @@ class EstateProperty(models.Model):
         required=True,
         copy=False,
         default='new'
-    )
+    ) 
     
     property_type_id = fields.Many2one('estate.property.type', string='Property Type')
     tag_ids = fields.Many2many('estate.property.tag', string="Tags")
@@ -48,6 +49,24 @@ class EstateProperty(models.Model):
     total_area = fields.Float(compute="_compute_total_area", string="Total Area")
     buyer_id = fields.Many2one('res.partner', string="Buyer", copy=False)
     salesperson_id = fields.Many2one('res.users', string="Salesperson", default=lambda self: self.env.user, required=True)
+    
+    state = fields.Selection([
+        ('new', 'New'),
+        ('offer_received', 'Offer Received'),
+        ('offer_accepted', 'Offer Accepted'),
+        ('sold', 'Sold'),
+        ('canceled', 'Canceled')
+    ], string='Status', required=True, copy=False, default='new')
+    
+    def action_cancel(self):
+        if self.state == 'sold':
+            raise exceptions.UserError("A sold property cannot be canceled.")
+        self.state = 'canceled'
+
+    def action_sold(self):
+        if self.state == 'canceled':
+            raise exceptions.UserError("A canceled property cannot be set as sold.")
+        self.state = 'sold'
     
     @api.onchange('salesperson_id')
     def _onchange_salesperson_id(self):
@@ -65,3 +84,16 @@ class EstateProperty(models.Model):
         else:
             self.garden_area = False
             self.garden_orientation = False
+
+    @api.constrains('selling_price', 'expected_price')
+    def _check_selling_price(self):
+        for record in self:
+            if not float_utils.float_is_zero(record.selling_price, precision_digits=2):  # Check if selling price is not zero
+                min_selling_price = 0.9 * record.expected_price
+                if float_utils.float_compare(record.selling_price, min_selling_price, precision_digits=2) == -1:  # Check if selling price is less than 90% of expected price
+                    raise exceptions.ValidationError('The selling price cannot be less than 90% of the expected price!')
+
+    _sql_constraints = [
+        ('expected_price_check', 'CHECK(expected_price > 0)', 'The expected price must be strictly positive!'),
+        ('selling_price_check', 'CHECK(selling_price >= 0)', 'The selling price must be positive!'),
+    ]

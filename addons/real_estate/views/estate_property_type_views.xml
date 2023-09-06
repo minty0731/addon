@@ -20,6 +20,16 @@
                 <group>
                     <field name="name"/>
                 </group>
+                <notebook>
+                    <page string="Properties">
+                        <field name="property_ids" widget="one2many_list">
+                            <tree string="Related Properties" editable="bottom">
+                                <field name="name"/>
+                                <field name="description"/>
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
             </form>
         </field>
     </record>
