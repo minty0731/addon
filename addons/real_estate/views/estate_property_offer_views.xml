@@ -4,7 +4,9 @@
         <field name="name">estate.property.offer.list</field>
         <field name="model">estate.property.offer</field>
         <field name="arch" type="xml">
-            <tree string="Offers">
+        <field name="property_type_id"/>
+
+            <tree string="Offers" editable="bottom">
                 <field name="partner_id"/>
                 <field name="price"/>
                 <field name="state"/>
@@ -18,8 +20,8 @@
         <field name="arch" type="xml">
             <form string="Offer">
                 <header>
-                    <button name="action_accept" type="object" icon="fa-thumbs-up" attrs="{'invisible': [('state', '!=', 'new')]}" />
-                    <button name="action_refuse" type="object" icon="fa-thumbs-down" attrs="{'invisible': [('state', '!=', 'new')]}" />
+                    <button name="action_accept" type="object" string="Accept" class="btn-primary" attrs="{'invisible': [('state', 'in', ['accepted', 'refused'])]}" />
+                    <button name="action_refuse" type="object" string="Refuse" class="btn-secondary" attrs="{'invisible': [('state', 'in', ['accepted', 'refused'])]}" />
                 </header>
                 <sheet>
                     <group>
@@ -29,10 +31,6 @@
                         <field name="state"/>
                     </group>
                 </sheet>
-                <footer>
-                    <button name="action_accept" type="object" string="Accept" class="btn-primary" attrs="{'invisible': [('state', '!=', 'new')]}" />
-                    <button name="action_refuse" type="object" string="Refuse" class="btn-secondary" attrs="{'invisible': [('state', '!=', 'new')]}" />
-                </footer>
             </form>
         </field>
     </record>

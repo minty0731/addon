@@ -5,7 +5,9 @@
         <field name="name">estate.property.type.list</field>
         <field name="model">estate.property.type</field>
         <field name="arch" type="xml">
-            <tree string="Property Types">
+            <tree string="Property Types" default_order="sequence">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>    
                 <field name="name"/>
             </tree>
         </field>
@@ -16,6 +18,11 @@
         <field name="name">estate.property.type.form</field>
         <field name="model">estate.property.type</field>
         <field name="arch" type="xml">
+            <header>
+            <button name="action_show_offers" type="object" string="Offers" class="oe_stat_button" icon="fa-pencil-square-o" attrs="{'invisible': [('offer_count', '=', 0)]}">
+                <field name="offer_count" widget="statinfo"/>
+            </button>
+            </header>
             <form string="Property Type">
                 <group>
                     <field name="name"/>
@@ -33,4 +40,14 @@
             </form>
         </field>
     </record>
+    <record id="action_show_offers" model="ir.actions.act_window">
+        <field name="name">Offers</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">estate.property.offer</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('property_type_id', '=', active_id)]</field>
+    </record>
+
+    
+
 </odoo>

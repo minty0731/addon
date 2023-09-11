@@ -4,7 +4,9 @@ from odoo.tools import float_utils
 
 class EstateProperty(models.Model):
     _name = "estate.property"
+    
     _description = "Real Estate Property"
+    _order = "id desc"
 
     name = fields.Char(string="Title", required=True)
     description = fields.Text()
@@ -44,12 +46,14 @@ class EstateProperty(models.Model):
     
     property_type_id = fields.Many2one('estate.property.type', string='Property Type')
     tag_ids = fields.Many2many('estate.property.tag', string="Tags")
-    
-    
+    offer_ids = fields.One2many('estate.property.offer', 'property_id', string="Offers")
+    salesperson_id = fields.Many2one('res.users', string='Salesperson')
     total_area = fields.Float(compute="_compute_total_area", string="Total Area")
     buyer_id = fields.Many2one('res.partner', string="Buyer", copy=False)
     salesperson_id = fields.Many2one('res.users', string="Salesperson", default=lambda self: self.env.user, required=True)
-    
+    highest_offer = fields.Float(string="Highest Offer", compute="_compute_highest_offer", store=True)
+
+
     state = fields.Selection([
         ('new', 'New'),
         ('offer_received', 'Offer Received'),
@@ -92,6 +96,18 @@ class EstateProperty(models.Model):
                 min_selling_price = 0.9 * record.expected_price
                 if float_utils.float_compare(record.selling_price, min_selling_price, precision_digits=2) == -1:  # Check if selling price is less than 90% of expected price
                     raise exceptions.ValidationError('The selling price cannot be less than 90% of the expected price!')
+
+    @api.ondelete(at_uninstall=False)
+    def _check_property_state(self):
+        for record in self:
+            if record.state not in ('New', 'Canceled'):
+                raise exceptions.UserError("You can only delete properties which are in 'New' or 'Canceled' state.")
+
+
+    @api.depends('offer_ids.price') 
+    def _compute_highest_offer(self):
+        for record in self:
+            record.highest_offer = max(record.offer_ids.mapped('price'), default=0.0)
 
     _sql_constraints = [
         ('expected_price_check', 'CHECK(expected_price > 0)', 'The expected price must be strictly positive!'),
