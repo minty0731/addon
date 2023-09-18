@@ -26,12 +26,31 @@ class EstatePropertyOffer(models.Model):
         return super(EstatePropertyOffer, self).create(vals)
 
     def action_accept(self):
-        self.ensure_one()
-        self.state = 'accepted'
+        for offer in self:
+            if not offer.id:
+                offer = super(EstatePropertyOffer, offer).create(offer._convert_to_write(offer._cache))
+                
+            offer.write({'state': 'accepted'})
+            offer.property_id.state = 'offer_accepted'
+    
 
     def action_refuse(self):
-        self.ensure_one()
-        self.state = 'refused'
+        for offer in self:
+            if not offer.id:
+                offer = super(EstatePropertyOffer, offer).create(offer._convert_to_write(offer._cache))
+            
+            offer.state = 'refused'
+
+    @api.model
+    def create(self, vals):
+        property = self.env['estate.property'].browse(vals['property_id'])
+        if 'price' in vals and vals['price'] < property.highest_offer: 
+            raise exceptions.UserError("The offer amount is lower than the existing highest offer.")
+    
+        property.state = 'offer_received'
+        
+        # Create the offer record and return it
+        return super(EstatePropertyOffer, self).create(vals)
 
     _sql_constraints = [
         ('offer_price_check', 'CHECK(price > 0)', 'The offer price must be strictly positive!'),
