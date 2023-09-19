@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_mymodel_form" model="ir.ui.view">
+        <field name="name">mymodel.form</field>
+        <field name="model">my.module.mymodel</field>
+        <field name="arch" type="xml">
+            <form>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_mymodel_tree" model="ir.ui.view">
+        <field name="name">mymodel.tree</field>
+        <field name="model">my.module.mymodel</field>
+        <field name="arch" type="xml">
+            <tree>
+            </tree>
+        </field>
+    </record>
+    <record id="view_mymodel_form_custom" model="ir.ui.view">
+        <field name="name">mymodel.form.custom</field>
+        <field name="model">my.module.mymodel</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="title"/>
+                            <field name="author"/>
+                        </group>
+                        <group>
+                            <field name="publication_date"/>
+                            <field name="genre"/>
+                        </group>
+                    </group>
+                    <group>
+                        <button string="Custom Action" type="object" name="custom_action_method" class="btn-primary"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
